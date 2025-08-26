@@ -1,0 +1,16 @@
+{{!-- src/views/home.handlebars --}}
+<h2 class="muted">Lista de productos</h2>
+{{#if products.length}}
+<table aria-label="Listado de productos">
+  <thead>
+    <tr><th>ID</th><th>Título</th><th>Precio</th><th>Código</th><th>Stock</th><th>Categoría</th></tr>
+  </thead>
+  <tbody>
+    {{#each products}}
+      {{> productRow}}
+    {{/each}}
+  </tbody>
+</table>
+{{else}}
+  <p class="muted">No hay productos cargados todavía.</p>
+{{/if}}

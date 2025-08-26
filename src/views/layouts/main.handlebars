@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{title}}</title>
+    <link rel="stylesheet" href="/public/styles.css" />
+    <style>
+      body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 0; padding: 2rem; background:#f7f7f8; }
+      header { display:flex; align-items:center; gap:1rem; margin-bottom:1.5rem;}
+      header a { text-decoration:none; color:#0a7; font-weight:600;}
+      .container { max-width: 980px; margin: 0 auto; background:#fff; padding:1.25rem 1.5rem; border-radius:14px; box-shadow: 0 4px 16px rgba(0,0,0,.06);}
+      h1,h2 { margin: .2rem 0 .8rem; }
+      table { width:100%; border-collapse: collapse; }
+      th, td { padding:.6rem .5rem; border-bottom: 1px solid #eee; text-align:left; }
+      .muted{ color:#666;}
+      form { display:grid; gap:.6rem; grid-template-columns: repeat(6, 1fr); }
+      form input, form select { padding:.5rem; border:1px solid #ddd; border-radius:8px; }
+      form button { grid-column: span 2; padding:.6rem 1rem; border:0; border-radius:10px; background:#0a7; color:white; font-weight:600; cursor:pointer;}
+      .row { display:grid; grid-template-columns: 1fr 1fr; gap:1.25rem; margin-top:1rem; }
+      .danger { background:#d33; }
+      .pill { display:inline-block; padding:.2rem .45rem; border-radius:999px; background:#eef; font-size:.8rem; }
+      footer { margin-top:2rem; color:#666; font-size:.9rem; }
+      nav { display:flex; gap:.8rem; margin-bottom: 1rem; }
+      nav a { padding:.35rem .6rem; border:1px solid #ddd; border-radius:8px; }
+      nav a.active { background:#0a7; color:#fff; border-color:#0a7; }
+      .right { text-align:right;}
+    </style>
+    {{{head}}}
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>{{title}}</h1>
+      </header>
+      <nav>
+        <a href="/" class="{{#if isHome}}active{{/if}}">Home</a>
+        <a href="/realtimeproducts" class="{{#if isRealtime}}active{{/if}}">Tiempo real</a>
+      </nav>
+      {{{body}}}
+      <footer>
+        <div class="muted">Express + Handlebars + Socket.IO</div>
+      </footer>
+    </div>
+    {{{scripts}}}
+  </body>
+</html>

@@ -1,0 +1,38 @@
+{{!-- src/views/realTimeProducts.handlebars --}}
+<h2 class="muted">Lista en vivo</h2>
+<table aria-label="Listado de productos en tiempo real">
+  <thead>
+    <tr><th>ID</th><th>Título</th><th>Precio</th><th>Código</th><th>Stock</th><th>Categoría</th></tr>
+  </thead>
+  <tbody id="products-body">
+    {{#each products}}
+      {{> productRow}}
+    {{/each}}
+  </tbody>
+</table>
+
+<div class="row">
+  <section>
+    <h3>Agregar producto</h3>
+    <form id="form-add" autocomplete="off">
+      <input required name="title" placeholder="Título" />
+      <input required name="description" placeholder="Descripción" />
+      <input required name="price" type="number" step="0.01" placeholder="Precio" />
+      <input required name="code" placeholder="Código" />
+      <input required name="stock" type="number" step="1" min="0" placeholder="Stock" />
+      <input name="category" placeholder="Categoría" />
+      <button type="submit">Crear</button>
+    </form>
+  </section>
+  <section>
+    <h3>Eliminar producto</h3>
+    <form id="form-del" autocomplete="off">
+      <input required name="id" type="number" placeholder="ID a eliminar" />
+      <button type="submit" class="danger">Eliminar</button>
+    </form>
+    <p class="muted">Estos formularios usan <span class="pill">WebSocket</span> (no HTTP).</p>
+  </section>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/public/js/realtime.js" defer></script>
