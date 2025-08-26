@@ -1,289 +1,98 @@
-# Servidor Express - API de Productos y Carritos
 
-**Entrega N° 1 - Programación Backend I - CoderHouse**
+# Servidor Express handlebars y websocket.io - Entrega N°2
 
-Una API REST desarrollada con Node.js y Express para gestionar productos y carritos de compra, con persistencia en archivos JSON.
+**Programación Backend I - CoderHouse 2025**
 
-## 📋 Tabla de Contenidos
+API REST y vistas dinámicas con Handlebars y Websockets para gestión de productos y carritos.
 
-- [Características](#-características)
-- [Tecnologías](#-tecnologías)
-- [Instalación](#-instalación)
-- [Uso](#-uso)
-- [API Endpoints](#-api-endpoints)
-  - [Productos](#productos)
-  - [Carritos](#carritos)
-- [Estructura del Proyecto](#-estructura-del-proyecto)
-- [Ejemplos de Uso](#-ejemplos-de-uso)
-- [Contribución](#-contribución)
+##  Instalación
 
-## ✨ Características
-
-- ✅ **API REST completa** para gestión de productos y carritos
-- ✅ **Persistencia en archivos JSON** (products.json y carts.json)
-- ✅ **Validación de datos** en todos los endpoints
-- ✅ **Manejo de errores** con códigos HTTP apropiados
-- ✅ **IDs autogenerados** para productos y carritos
-- ✅ **Gestión de cantidad** automática en carritos
-- ✅ **Estructura modular** con managers y routers separados
-
-## 🚀 Tecnologías
-
-- **Node.js** - Entorno de ejecución
-- **Express.js** - Framework web
-- **ES6 Modules** - Módulos de JavaScript
-- **File System Promises** - Manejo de archivos
-- **JSON** - Formato de datos
-
-## 📦 Instalación
-
-1. **Clonar el repositorio**
-   ```bash
-   git clone <url-del-repositorio>
-   cd servidor-express
-   ```
-
-2. **Instalar dependencias**
-   ```bash
-   npm install
-   ```
-
-3. **Iniciar el servidor**
-   ```bash
-   npm start
-   ```
-
+1. Clona el repositorio:
+  ```bash
+  git clone <url-del-repositorio>
+  cd servidor-express
+  ```
+2. Instala dependencias:
+  ```bash
+  npm install
+  ```
+3. Inicia el servidor:
+  ```bash
+  npm start
+  ```
 El servidor estará disponible en: `http://localhost:8080`
 
-## 🎯 Uso
-
-### Estructura de Archivos
-- Los datos se almacenan automáticamente en:
-  - `src/data/products.json` - Productos
-  - `src/data/carts.json` - Carritos
-
-### Puerto del Servidor  
-- **Puerto**: 8080
-- **URL Base**: `http://localhost:8080`
-
-## 🔌 API Endpoints
-
-### Productos
-
-#### `GET /api/products`
-Obtiene todos los productos.
-
-**Respuesta:**
-```json
-[
-  {
-    "id": 1,
-    "title": "Producto 1",
-    "description": "Descripción del producto",
-    "code": "PROD001",
-    "price": 100,
-    "status": true,
-    "stock": 50,
-    "category": "Electrónicos",
-    "thumbnails": ["img1.jpg", "img2.jpg"]
-  }
-]
-```
-
-#### `GET /api/products/:pid`
-Obtiene un producto por ID.
-
-**Parámetros:**
-- `pid` - ID del producto
-
-**Respuestas:**
-- `200` - Producto encontrado
-- `404` - Producto no encontrado
-
-#### `POST /api/products`
-Crea un nuevo producto.
-
-**Body requerido:**
-```json
-{
-  "title": "string",
-  "description": "string", 
-  "code": "string",
-  "price": "number",
-  "status": "boolean",
-  "stock": "number",
-  "category": "string",
-  "thumbnails": ["string"] // opcional
-}
-```
-
-**Respuestas:**
-- `201` - Producto creado exitosamente
-- `400` - Faltan campos requeridos
-
-#### `PUT /api/products/:pid`
-Actualiza un producto existente.
-
-**Parámetros:**
-- `pid` - ID del producto
-
-**Body:** Campos a actualizar (el ID no se puede modificar)
-
-**Respuestas:**
-- `200` - Producto actualizado
-- `404` - Producto no encontrado
-
-#### `DELETE /api/products/:pid`
-Elimina un producto.
-
-**Parámetros:**
-- `pid` - ID del producto
-
-**Respuestas:**
-- `204` - Producto eliminado
-- `404` - Producto no encontrado
-
-### Carritos
-
-#### `POST /api/carts`
-Crea un nuevo carrito vacío.
-
-**Respuesta:**
-```json
-{
-  "id": 1,
-  "products": []
-}
-```
-
-#### `GET /api/carts/:cid`
-Obtiene los productos de un carrito.
-
-**Parámetros:**
-- `cid` - ID del carrito
-
-**Respuesta:**
-```json
-[
-  {
-    "product": 1,
-    "quantity": 2
-  }
-]
-```
-
-**Respuestas:**
-- `200` - Productos del carrito
-- `404` - Carrito no encontrado
-
-#### `POST /api/carts/:cid/product/:pid`
-Agrega un producto al carrito.
-
-**Parámetros:**
-- `cid` - ID del carrito
-- `pid` - ID del producto
-
-**Comportamiento:**
-- Si el producto ya existe: incrementa la cantidad en 1
-- Si es nuevo: lo agrega con cantidad 1
-
-**Respuestas:**
-- `200` - Producto agregado al carrito
-- `404` - Carrito no encontrado
-
-## 📁 Estructura del Proyecto
+## 🗂️ Estructura del Proyecto
 
 ```
 servidor-express/
 ├── src/
-│   ├── app.js                 # Servidor principal
-│   ├── data/                  # Archivos de datos (auto-generados)
-│   │   ├── products.json      # Base de datos de productos
-│   │   └── carts.json         # Base de datos de carritos
-│   ├── managers/              # Clases de gestión de datos
-│   │   ├── ProductManager.js  # Gestión de productos
-│   │   └── CartManager.js     # Gestión de carritos
-│   └── routes/                # Definición de rutas
-│       ├── products.router.js # Rutas de productos
-│       └── carts.router.js    # Rutas de carritos
+│   ├── app.js
+│   ├── data/
+│   │   ├── products.json
+│   │   └── carts.json
+│   ├── managers/
+│   │   ├── ProductManager.js
+│   │   └── CartManager.js
+│   ├── public/
+│   │   ├── styles.css
+│   │   └── js/
+│   │       └── realtime.js
+│   ├── routes/
+│   │   ├── products.router.js
+│   │   ├── carts.router.js
+│   │   └── views.router.js
+│   └── views/
+│       ├── home.handlebars
+│       ├── realTimeProducts.handlebars
+│       ├── layouts/
+│       │   └── main.handlebars
+│       └── partials/
+│           └── productRow.handlebars
 ├── package.json
 └── README.md
 ```
 
-## 💡 Ejemplos de Uso
+## ✨ Características
 
-### Crear un producto
-```bash
-curl -X POST http://localhost:8080/api/products \
-  -H "Content-Type: application/json" \
-  -d '{
-    "title": "iPhone 15",
-    "description": "Último modelo de iPhone",
-    "code": "IPH15",
-    "price": 999,
-    "status": true,
-    "stock": 25,
-    "category": "Smartphones",
-    "thumbnails": ["iphone15_1.jpg", "iphone15_2.jpg"]
-  }'
-```
+- API REST para productos y carritos
+- Persistencia en archivos JSON
+- Vistas dinámicas con Handlebars
+- Actualización en tiempo real con Websockets (Socket.io)
 
-### Crear un carrito
-```bash
-curl -X POST http://localhost:8080/api/carts
-```
+## 🖥️ Vistas
 
-### Agregar producto al carrito
-```bash
-curl -X POST http://localhost:8080/api/carts/1/product/1
-```
+- **home.handlebars**: Muestra la lista de productos agregados hasta el momento.
+- **realTimeProducts.handlebars**: Muestra la lista de productos y se actualiza automáticamente cada vez que se crea o elimina un producto, usando websockets.
 
-### Obtener productos del carrito
-```bash
-curl http://localhost:8080/api/carts/1
-```
+## 🔌 Websockets
 
-## 🔧 Características Técnicas
+- El servidor utiliza Socket.io para enviar actualizaciones en tiempo real a la vista `realTimeProducts.handlebars`.
+- Cada vez que se crea o elimina un producto, la lista se actualiza automáticamente para todos los usuarios conectados.
 
-### Validaciones
-- **Productos**: Todos los campos son requeridos excepto `thumbnails`
-- **IDs**: Se generan automáticamente y no pueden modificarse
-- **Carritos**: Se crean vacíos y se populan dinámicamente
+## 📝 Consigna
 
-### Manejo de Errores
-- `400` - Bad Request (datos faltantes o inválidos)
-- `404` - Not Found (recurso no encontrado)
-- `201` - Created (recurso creado exitosamente)
-- `204` - No Content (eliminación exitosa)
+Configurar el proyecto para que trabaje con Handlebars y Websocket.
 
-### Persistencia
-- Los archivos JSON se crean automáticamente si no existen
-- Los directorios se generan automáticamente
-- Los datos persisten entre reinicios del servidor
+### Aspectos a incluir
 
-## 🚦 Estados de Respuesta
+- Integrar el motor de plantillas Handlebars en el servidor.
+- Instalar y configurar un servidor de socket.io.
 
-| Código | Estado | Descripción |
-|--------|--------|-------------|
-| 200 | OK | Operación exitosa |
-| 201 | Created | Recurso creado |
-| 204 | No Content | Eliminación exitosa |
-| 400 | Bad Request | Datos inválidos |
-| 404 | Not Found | Recurso no encontrado |
+#### Handlebars
 
-## 👨‍💻 Contribución
+- Crear la vista `home.handlebars` que muestre una lista de todos los productos agregados hasta el momento.
 
-Este proyecto es parte de la **Entrega N° 1** del curso de **Programación Backend I** de **CoderHouse**.
+#### Websockets
 
-### Requisitos Cumplidos ✅
-- ✅ Servidor Express en puerto 8080
-- ✅ Rutas `/api/products` con CRUD completo
-- ✅ Rutas `/api/carts` con funcionalidad requerida
-- ✅ Persistencia en archivos JSON
-- ✅ ProductManager y CartManager implementados
-- ✅ Validaciones y manejo de errores
-- ✅ IDs autogenerados
+- Crear la vista `realTimeProducts.handlebars`, disponible en el endpoint `/realtimeproducts` del views router. Esta vista mostrará la misma lista de productos, pero se actualizará automáticamente usando websockets.
+- Cada vez que se cree o elimine un producto, la lista se debe actualizar en tiempo real en dicha vista.
+
+### Sugerencias
+
+- Para la creación y eliminación de productos, se recomienda crear un formulario simple en la vista `realTimeProducts.handlebars` y enviar el contenido mediante websockets en vez de HTTP.
+- Si se desea conectar socket emits con HTTP, se debe buscar la forma de utilizar el servidor io de Sockets dentro de la petición POST.
 
 ---
 
-**Desarrollado con 💚 para CoderHouse - Programación Backend I 2025**
+**Desarrollado para CoderHouse - Programación Backend I 2025**
