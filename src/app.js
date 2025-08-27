@@ -1,6 +1,6 @@
 import express from "express";
 import { createServer } from "http";
-import { Server as SocketIOServer } from "socket.io";
+import { Server } from "socket.io";
 import { engine as handlebarsEngine } from "express-handlebars";
 
 import productsRouter from "./routes/products.router.js";
@@ -34,16 +34,16 @@ app.use("/", viewsRouter);
 
 // ----- HTTP + Socket.IO -----
 const httpServer = createServer(app);
-const io = new SocketIOServer(httpServer);
+const socketServer = new Server(httpServer);
 
-// Hace io accesible desde las rutas (para HTTP -> Puente WS)
-app.set("io", io);
+// Hace socketServer accesible desde las rutas (para HTTP -> Puente WS)
+app.set("socketServer", socketServer);
 
 // Eventos WS
 const productManager = new ProductManager("src/data/products.json");
 
-io.on("connection", async (socket) => {
-  // Send initial state
+socketServer.on("connection", async (socket) => {
+  
   socket.emit("products", await productManager.getAll());
 
   socket.on("need-products", async () => {
@@ -54,7 +54,7 @@ io.on("connection", async (socket) => {
     try {
       const created = await productManager.addProduct(payload);
       const updated = await productManager.getAll();
-      io.emit("products", updated);
+      socketServer.emit("products", updated);
     } catch (e) {
       console.error("Error creating product via WS", e);
     }
@@ -64,7 +64,7 @@ io.on("connection", async (socket) => {
     try {
       await productManager.deleteProduct(id);
       const updated = await productManager.getAll();
-      io.emit("products", updated);
+      socketServer.emit("products", updated);
     } catch (e) {
       console.error("Error deleting product via WS", e);
     }
