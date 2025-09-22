@@ -1,17 +1,11 @@
 import mongoose from "mongoose";
-import Product from "../../models/product.model.js";
-import { buildPageLinks } from "../../utils/buildLinks.js";
-import HttpError from "../../utils/HttpError.js";
+import Product from "../models/product.model.js";
+import { buildPageLinks } from "../utils/buildLinks.js";
+import HttpError from "../utils/HttpError.js";
 
 export async function getAll(req, res, next) {
   try {
     const { limit = 10, page = 1, sort, query } = req.query;
-
-    // Normalizar números
-    limit = Number(limit);
-    page = Number(page);
-    if (!Number.isInteger(limit) || limit < 1) limit = 10;
-    if (!Number.isInteger(page) || page < 1) page = 1;
 
     // Filtros simples: query="status:true" | "category:Notebooks"
     const filter = {};

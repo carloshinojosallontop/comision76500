@@ -12,7 +12,17 @@ const productSchema = new mongoose.Schema(
     category: { type: String, index: true },
     thumbnails: [{ type: String }],
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+    toJSON: {
+      transform: (doc, ret) => {
+        ret.id = ret._id;
+        delete ret._id;
+        delete ret.__v;
+        return ret;
+      },
+    },
+  }
 );
 
 productSchema.plugin(paginate);
