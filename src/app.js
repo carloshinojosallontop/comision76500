@@ -75,6 +75,7 @@ import express from "express";
 import productsRouter from "./routes/products.router.js";
 import cartsRouter from "./routes/carts.router.js";
 import viewsRouter from "./routes/views.router.js";
+import errorHandler from "./middlewares/error.middleware.js";
 
 const app = express();
 
@@ -89,6 +90,9 @@ app.use("/api/carts", cartsRouter);
 
 // ----- Views Router -----
 // app.use("/", viewsRouter);
+
+// ----- Error Handling Middleware -----
+app.use(errorHandler);
 
 
 export default app;

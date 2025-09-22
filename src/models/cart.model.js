@@ -6,11 +6,11 @@ const cartSchema = new Schema(
     products: [
       {
         product: {
-          type: Schema.Types.ObjectId,
-          ref: "Product",
+          type: Schema.Types.ObjectId, // Referencia al modelo de producto
+          ref: "Product", // Nombre del modelo referenciado
           required: true,
         },
-        quantity: { type: Number, default: 1, min: 1 },
+        quantity: { type: Number, default: 1, min: 1 }, // Cantidad del producto en el carrito
       },
     ],
   },
