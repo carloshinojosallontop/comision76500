@@ -1,15 +1,27 @@
+import mongoose from "mongoose";
 import Product from "../../models/product.model.js";
 import { buildPageLinks } from "../../utils/buildLinks.js";
+import HttpError from "../../utils/HttpError.js";
 
-export async function list(req, res, next) {
+export async function getAll(req, res, next) {
   try {
     const { limit = 10, page = 1, sort, query } = req.query;
+
+    // Normalizar números
+    limit = Number(limit);
+    page = Number(page);
+    if (!Number.isInteger(limit) || limit < 1) limit = 10;
+    if (!Number.isInteger(page) || page < 1) page = 1;
+
+    // Filtros simples: query="status:true" | "category:Notebooks"
     const filter = {};
     if (query) {
       const [k, v] = String(query).split(":");
       if (k === "status") filter.status = v === "true";
       if (k === "category") filter[k] = v;
     }
+
+    // Orden por precio
     const sortOpt = {};
     if (sort === "asc") sortOpt.price = 1;
     if (sort === "desc") sortOpt.price = -1;
@@ -45,10 +57,57 @@ export async function list(req, res, next) {
   }
 }
 
-export async function create(req, res, next) {
+export async function addProduct(req, res, next) {
   try {
     const doc = await Product.create(req.body);
     res.status(201).json(doc);
+  } catch (e) {
+    next(e);
+  }
+}
+
+export async function getById(req, res, next) {
+  try {
+    const { pid } = req.params;
+    if (!mongoose.isValidObjectId(pid)) {
+      throw new HttpError(400, "Invalid product id");
+    }
+    const product = await Product.findById(pid);
+    if (!product) {
+      throw new HttpError(404, "Product not found");
+    }
+    res.json(product);
+  } catch (e) {
+    next(e);
+  }
+}
+
+export async function updateById(req, res, next) {
+  try {
+    const { pid } = req.params;
+    if (!mongoose.isValidObjectId(pid)) {
+      throw new HttpError(400, "Invalid product id");
+    }
+    const updated = await Product.findByIdAndUpdate(pid, req.body, {
+      new: true,
+      runValidators: true,
+    });
+    if (!updated) throw new HttpError(404, "Product not found");
+    res.json(updated);
+  } catch (e) {
+    next(e);
+  }
+}
+
+export async function deleteById(req, res, next) {
+  try {
+    const { pid } = req.params;
+      if (!mongoose.isValidObjectId(pid)) {
+      throw new HttpError(400, "Invalid product id");
+    }
+    const deleted = await Product.findByIdAndDelete(pid);
+    if (!deleted) throw new HttpError(404, "Product not found");
+    res.json({ message: "Product deleted" });
   } catch (e) {
     next(e);
   }
