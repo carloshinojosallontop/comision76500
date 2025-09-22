@@ -72,14 +72,23 @@
 // });
 
 import express from "express";
+import productsRouter from "./routes/products.router.js";
+import cartsRouter from "./routes/carts.router.js";
+import viewsRouter from "./routes/views.router.js";
+
 const app = express();
 
 // ----- Middlewares -----
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use("/public", express.static(process.cwd() + "/src/public"));
 
 // ----- Routers (API) -----
-app.get("/", (req, res) => {
-  res.send("API is running");
-});
+app.use("/api/products", productsRouter);
+app.use("/api/carts", cartsRouter);
+
+// ----- Views Router -----
+// app.use("/", viewsRouter);
+
 
 export default app;

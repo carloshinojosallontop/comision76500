@@ -14,7 +14,18 @@ const cartSchema = new Schema(
       },
     ],
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+    toJSON: {
+      virtuals: true, // Incluye campos virtuales en la salida JSON
+      transform: (doc, ret) => {
+        ret.id = doc._id;
+        delete ret._id;
+        delete ret.__v;
+        return ret;
+      },
+    },
+  }
 );
 
 export default mongoose.model("Cart", cartSchema);
