@@ -6,26 +6,16 @@ const cartSchema = new Schema(
     products: [
       {
         product: {
-          type: Schema.Types.ObjectId, // Referencia al modelo de producto
-          ref: "Product", // Nombre del modelo referenciado
+          type: Schema.Types.ObjectId,
+          ref: "Product",
           required: true,
         },
-        quantity: { type: Number, default: 1, min: 1 }, // Cantidad del producto en el carrito
+        quantity: { type: Number, default: 1, min: 1 },
       },
     ],
   },
-  {
-    timestamps: true,
-    toJSON: {
-      virtuals: true, // Incluye campos virtuales en la salida JSON
-      transform: (doc, ret) => {
-        ret.id = doc._id;
-        delete ret._id;
-        delete ret.__v;
-        return ret;
-      },
-    },
-  }
+  { timestamps: true }
 );
 
-export default mongoose.model("Cart", cartSchema);
+const Cart = mongoose.model("Cart", cartSchema);
+export default Cart;
