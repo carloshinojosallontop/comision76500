@@ -1,21 +1,21 @@
-// import "dotenv/config";
-// import "./config/db.config.js";
-// import app from "./app.js";
+import "dotenv/config";
+import "./config/db.config.js";
+import app from "./app.js";
 
-// const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 8080;
 
-// const server = app.listen(PORT, () => {
-//   console.log(`Server running on http://localhost:${PORT}`);
-// });
+const server = app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
+});
 
-// server.on("error", (err) => {
-//   console.error("Server error:", err);
-// });
+server.on("error", (err) => {
+  console.error("Server error:", err);
+});
 
-// process.on("SIGINT", () => {
-//   console.log("Recibido SIGINT, apagando servidor...");
-//   server.close(() => {
-//     console.log("Servidor apagado.");
-//     process.exit(0);
-//   });
-// });
+process.on("SIGINT", () => {
+  console.log("Recibido SIGINT, apagando servidor...");
+  server.close(() => {
+    console.log("Servidor apagado.");
+    process.exit(0);
+  });
+});
