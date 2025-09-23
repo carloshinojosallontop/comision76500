@@ -1,12 +1,8 @@
 import Product from "../models/product.model.js";
 
-/** GET /  -> Home */
 export async function renderHome(req, res, next) {
   try {
-    // Últimos 12 productos para render inicial (SSR)
     const products = await Product.find().sort({ _id: -1 }).limit(12).lean();
-
-    // Distintas categorías (limpiando nulos/vacíos)
     const categoriesRaw = await Product.distinct("category");
     const categories = categoriesRaw
       .filter(Boolean)
@@ -25,7 +21,6 @@ export async function renderHome(req, res, next) {
   }
 }
 
-/** GET /realtimeproducts  -> Vista tiempo real */
 export async function renderRealtime(req, res, next) {
   try {
     const products = await Product.find().lean(); // render inicial

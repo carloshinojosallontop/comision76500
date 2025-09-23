@@ -1,4 +1,3 @@
-// src/public/js/homeFilters.js
 (function () {
   const $tbody = document.getElementById("products-body");
   const $btn = document.getElementById("apply-filters");
@@ -32,7 +31,7 @@
     return {
       limit: Number.isInteger(limit) && limit > 0 ? limit : 10,
       sort: sort === "asc" || sort === "desc" ? sort : "",
-      category, // puede ser ""
+      category,
     };
   }
 
@@ -44,7 +43,8 @@
     // sort
     if (state.params.sort) params.set("sort", state.params.sort);
     // category -> query=category:<value>
-    if (state.params.category) params.set("query", `category:${state.params.category}`);
+    if (state.params.category)
+      params.set("query", `category:${state.params.category}`);
     // page
     params.set("page", String(p));
     return `/api/products?${params.toString()}`;
@@ -61,15 +61,27 @@
         const category = esc(p.category);
         const pid = esc(p._id);
         return `
-          <tr>
-            <td class="muted">${code}</td>
-            <td>${title}</td>
-            <td>${price}</td>
-            <td>${stock}</td>
-            <td>${category}</td>
-            <td><button class="btn add-to-cart" data-pid="${pid}">Agregar</button></td>
-          </tr>
-        `;
+        <tr>
+          <td class="muted">${code}</td>
+          <td>${title}</td>
+          <td>${price}</td>
+          <td>${stock}</td>
+          <td>${category}</td>
+          <td>
+            <input
+              type="number"
+              class="qty-input"
+              name="qty"
+              min="1"
+              step="1"
+              value="1"
+              style="width:90px;padding:4px;"
+              aria-label="Cantidad para ${title}"
+            />
+          </td>
+          <td><button class="btn add-to-cart" data-pid="${pid}">Agregar</button></td>
+        </tr>
+      `;
       })
       .join("");
   }
@@ -80,10 +92,21 @@
     state.prevLink = meta?.prevLink || null;
     state.nextLink = meta?.nextLink || null;
 
-    if ($info) $info.textContent = `Página ${state.page} de ${state.totalPages}`;
+    if ($info)
+      $info.textContent = `Página ${state.page} de ${state.totalPages}`;
 
-    if ($prev) $prev.disabled = !(meta?.hasPrevPage || state.page > 1 || !!state.prevLink);
-    if ($next) $next.disabled = !(meta?.hasNextPage || state.page < state.totalPages || !!state.nextLink);
+    if ($prev)
+      $prev.disabled = !(
+        meta?.hasPrevPage ||
+        state.page > 1 ||
+        !!state.prevLink
+      );
+    if ($next)
+      $next.disabled = !(
+        meta?.hasNextPage ||
+        state.page < state.totalPages ||
+        !!state.nextLink
+      );
   }
 
   async function fetchAndRender(url) {
@@ -137,7 +160,10 @@
       if (state.nextLink) {
         await fetchAndRender(state.nextLink);
       } else {
-        const targetPage = Math.min(state.totalPages || 1, (state.page || 1) + 1);
+        const targetPage = Math.min(
+          state.totalPages || 1,
+          (state.page || 1) + 1
+        );
         await fetchAndRender(buildUrl(targetPage));
       }
     } catch (err) {
@@ -162,10 +188,8 @@
     goNext();
   });
 
-
   (function init() {
     state.params = getParamsFromUI();
     apply(true);
   })();
 })();
-

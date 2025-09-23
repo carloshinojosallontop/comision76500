@@ -1,4 +1,3 @@
-// src/sockets/index.js
 import Product from "../models/product.model.js";
 
 export default function registerSockets(io) {
@@ -22,7 +21,7 @@ export default function registerSockets(io) {
 
     socket.on("new-product", async (payload, ack) => {
       try {
-        // Normalizamos code a string sin espacios
+
         if (!payload?.code) {
           ack?.({ ok: false, msg: "code is required" });
           return;

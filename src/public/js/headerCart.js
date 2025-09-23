@@ -1,4 +1,3 @@
-// src/public/js/headerCart.js
 (function () {
   const link = document.getElementById('cartLink');
   const createBtn = document.getElementById('createCartBtn');
@@ -22,34 +21,52 @@
     }
   }
 
-  refreshCartLink();
-
-  // Si no hay carrito, el link dispara creación
-  link?.addEventListener('click', (e) => {
-    if (!localStorage.getItem('cid')) {
-      e.preventDefault();
-      createBtn?.click();
+  async function postJSON(url, options = {}) {
+    const res = await fetch(url, { method: 'POST', ...options });
+    const text = await res.text(); // leer SIEMPRE el cuerpo
+    let data = null;
+    try { data = text ? JSON.parse(text) : null; } catch (_) {}
+    if (!res.ok) {
+      const msg = (data && (data.message || data.error)) || text || res.statusText || 'Error';
+      throw new Error(`HTTP ${res.status} ${res.statusText} - ${msg}`);
     }
-  });
+    return data;
+  }
 
-  // Crear carrito y redirigir
-  createBtn?.addEventListener('click', async (e) => {
-    e.preventDefault();
+  async function ensureCartAndRedirect() {
     try {
-      // Usa createCartAndStore si la expone addToCart.js (opción A)
+      // usa createCartAndStore de addToCart.js si existe
       const cid = await (window.createCartAndStore
         ? createCartAndStore()
-        : fetch('/api/carts', { method: 'POST' }).then(r => r.json()).then(d => d._id)
+        : (async () => {
+            const d = await postJSON('/api/carts'); // sin body
+            if (!d?._id) throw new Error('Respuesta sin _id');
+            localStorage.setItem('cid', d._id);
+            return d._id;
+          })()
       );
       refreshCartLink();
       window.location.href = '/carts/' + cid;
     } catch (err) {
-      console.error(err);
+      console.error('[Crear carrito] fallo:', err);
       alert(err?.message || 'No se pudo crear el carrito');
+    }
+  }
+
+  refreshCartLink();
+
+  link?.addEventListener('click', (e) => {
+    if (!localStorage.getItem('cid')) {
+      e.preventDefault();
+      ensureCartAndRedirect();
     }
   });
 
-  // Si otro tab modifica el cid
+  createBtn?.addEventListener('click', (e) => {
+    e.preventDefault();
+    ensureCartAndRedirect();
+  });
+
   window.addEventListener('storage', (ev) => {
     if (ev.key === 'cid') refreshCartLink();
   });

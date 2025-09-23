@@ -29,8 +29,13 @@
 <table aria-label="Listado de productos">
   <thead>
     <tr>
-      <th>Código</th><th>Título</th><th>Precio</th><th>Stock</th><th>Categoría</th>
-      <th>Acciones</th>
+      <th>Código</th>
+      <th>Título</th>
+      <th>Precio</th>
+      <th>Stock</th>
+      <th>Categoría</th>
+      <th>Cantidad</th>
+      <th>Agregar</th>
     </tr>
   </thead>
   <tbody id="products-body">
@@ -41,6 +46,18 @@
         <td>{{price}}</td>
         <td>{{stock}}</td>
         <td>{{category}}</td>
+        <td>
+          <input
+            type="number"
+            class="qty-input"
+            name="qty"
+            min="1"
+            step="1"
+            value="1"
+            style="width:90px;padding:4px;"
+            aria-label="Cantidad para {{title}}"
+          />
+        </td>
         <td>
           <button class="btn add-to-cart" data-pid="{{_id}}">Agregar</button>
         </td>

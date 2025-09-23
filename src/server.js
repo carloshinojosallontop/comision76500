@@ -13,9 +13,9 @@ const io = new Server(httpServer, {
   cors: { origin: "*", methods: ["GET", "POST"] },
 });
 
-app.set("io", io); // Hacer io accesible desde las rutas (para HTTP -> Puente WS)
+app.set("io", io);
 
-registerSockets(io); // Eventos WS (separados en otro módulo, más limpio
+registerSockets(io);
 
 httpServer.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);

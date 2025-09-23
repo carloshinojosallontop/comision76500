@@ -1,5 +1,3 @@
-/* src/public/js/addToCart.js */
-
 // --- Helpers de red y UI ---
 async function apiJSON(url, options = {}) {
   const res = await fetch(url, {
@@ -16,7 +14,6 @@ async function apiJSON(url, options = {}) {
 }
 
 function toast(msg) {
-  // Mínimo feedback. Mejora con un componente si quieres.
   try {
     if (!window.__toast) {
       const el = document.createElement("div");
@@ -91,7 +88,7 @@ document.addEventListener("click", async (ev) => {
     toast(`Agregado x${qty} al carrito`);
     btn.textContent = "Agregado ✓";
     setTimeout(() => (btn.textContent = prevText), 1200);
-    // Opcional: resetear a 1
+
     if (input) input.value = "1";
   } catch (err) {
     console.error(err);

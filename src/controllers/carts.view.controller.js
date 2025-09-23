@@ -1,30 +1,45 @@
 import Cart from "../models/cart.model.js";
 import HttpError from "../utils/HttpError.js";
 
+function toNumberSafe(v, { defaultValue = 0 } = {}) {
+  if (v === null || v === undefined) return defaultValue;
+  if (typeof v === "string") {
+    const cleaned = v.replace(/\s+/g, "").replace(",", ".");
+    const n = Number(cleaned);
+    return Number.isFinite(n) ? n : defaultValue;
+  }
+  const n = Number(v);
+  return Number.isFinite(n) ? n : defaultValue;
+}
+
 export async function renderCart(req, res, next) {
   try {
     const { cid } = req.params;
-    const cartDoc = await Cart.findById(cid).populate("products.product");
+    const cartDoc = await Cart.findById(cid)
+      .populate("products.product")
+      .lean();
+
     if (!cartDoc) throw new HttpError(404, "Cart not found");
 
-    const products = cartDoc.products.map((p) => {
-      const unitPrice = p?.product?.price ?? 0;
-      const lineTotal = unitPrice * p.quantity;
+    const lines = (cartDoc.products || []).map((p) => {
+      const unitPrice = toNumberSafe(p?.product?.price, { defaultValue: 0 });
+      const quantity = toNumberSafe(p?.quantity, { defaultValue: 1 });
+      const lineTotal = unitPrice * quantity;
       return {
-        ...p.toObject(),
+        title: p?.product?.title ?? "",
         unitPrice,
+        quantity,
         lineTotal,
       };
     });
-    const cartTotal = products.reduce((acc, p) => acc + p.lineTotal, 0);
 
-    const cart = { ...cartDoc.toObject(), products };
+    const cartTotal = lines.reduce((acc, l) => acc + l.lineTotal, 0);
 
-    return res.render("carts/detail", {
+    res.render("carts/detail", {
       title: "Mi carrito",
-      cart,
-      cartId: cartDoc._id, 
-      includeCartJS: true, 
+      isCart: true,
+      cartId: cartDoc._id,
+      lines,
       cartTotal,
     });
   } catch (e) {

@@ -4,7 +4,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{{title}}</title>
-    <!-- Estáticos servidos en /public -->
     <link rel="stylesheet" href="/public/css/styles.css" />
   </head>
 
@@ -16,8 +15,6 @@
         <nav>
           <a href="/" class="{{#if isHome}}active{{/if}}">Home</a>
           <a href="/realtimeproducts" class="{{#if isRealtime}}active{{/if}}">Tiempo real</a>
-
-          {{!-- Botón/link del carrito --}}
           <a id="cartLink" href="#" class="cart-link" style="margin-left:1rem;opacity:.6;">Mi carrito</a>
           <button id="createCartBtn" class="btn" style="margin-left:.5rem;display:none;">Crear carrito</button>
         </nav>
@@ -32,12 +29,9 @@
   </footer>
 </div>
 
-{{!-- JS global para “Agregar al carrito” (opción A que ya usas) --}}
+
 <script src="/public/js/addToCart.js"></script>
-
-{{!-- JS del header (link “Mi carrito” / “Crear carrito”) --}}
 <script src="/public/js/headerCart.js"></script>
-
 <script src="/public/js/homeFilters.js" defer></script>
 
 {{{scripts}}}
