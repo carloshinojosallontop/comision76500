@@ -4,7 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{{title}}</title>
-    <link rel="stylesheet" href="../../public/styles.css" />
+    <!-- Estáticos servidos en /public -->
+    <link rel="stylesheet" href="/public/css/styles.css" />
   </head>
   <body>
     <div class="container">
@@ -15,11 +16,15 @@
         <a href="/" class="{{#if isHome}}active{{/if}}">Home</a>
         <a href="/realtimeproducts" class="{{#if isRealtime}}active{{/if}}">Tiempo real</a>
       </nav>
+
       {{{body}}}
+
       <footer>
         <div class="muted">Express + Handlebars + Socket.IO</div>
       </footer>
     </div>
+
     {{{scripts}}}
   </body>
 </html>
+

@@ -1,55 +1,75 @@
+// src/sockets/index.js
 import Product from "../models/product.model.js";
 
 export default function registerSockets(io) {
   io.on("connection", async (socket) => {
-    console.log("client connected:", socket.id);
-
-    // Enviar estado inicial (todos los productos)
+    // Estado inicial
     try {
       const products = await Product.find().lean();
       socket.emit("products", products);
     } catch (e) {
-      console.error("WS: error sending initial products", e);
+      console.error("WS init products error:", e);
     }
 
-    // Cliente pide refrescar productos
     socket.on("need-products", async () => {
       try {
         const products = await Product.find().lean();
         socket.emit("products", products);
       } catch (e) {
-        console.error("WS: error on need-products", e);
+        console.error("WS need-products error:", e);
       }
     });
 
-    // Crear producto desde WS
-    socket.on("new-product", async (payload) => {
+    socket.on("new-product", async (payload, ack) => {
       try {
-        // payload debería tener: { title, code, price, stock, category, ... }
+        // Normalizamos code a string sin espacios
+        if (!payload?.code) {
+          ack?.({ ok: false, msg: "code is required" });
+          return;
+        }
+        payload.code = String(payload.code).trim();
+
         await Product.create(payload);
         const updated = await Product.find().lean();
-        io.emit("products", updated); // broadcast a todos
+        io.emit("products", updated);
+        ack?.({ ok: true });
       } catch (e) {
-        console.error("WS: error creating product", e);
-        // Opcional: avisar solo a ese cliente del error
-        socket.emit("error:product", { message: "No se pudo crear el producto" });
+        console.error("WS new-product error:", e);
+        ack?.({ ok: false, msg: e?.message || "No se pudo crear el producto" });
       }
     });
 
-    // Borrar producto desde WS
-    socket.on("delete-product", async ({ id }) => {
+    socket.on("delete-product", async ({ code }, ack) => {
       try {
-        await Product.findByIdAndDelete(id);
-        const updated = await Product.find().lean();
-        io.emit("products", updated); // broadcast
-      } catch (e) {
-        console.error("WS: error deleting product", e);
-        socket.emit("error:product", { message: "No se pudo eliminar el producto" });
-      }
-    });
+        if (!code) {
+          ack?.({ ok: false, msg: "code is required" });
+          return;
+        }
+        const normalized = String(code).trim();
 
-    socket.on("disconnect", () => {
-      console.log("🔌 client disconnected:", socket.id);
+        // Borrado por code exacto (case-sensitive). Si quieres que sea case-insensitive, usa la versión comentada abajo.
+        const deleted = await Product.findOneAndDelete({ code: normalized });
+
+        // // ❕ Versión case-insensitive:
+        // const deleted = await Product.findOneAndDelete({
+        //   code: { $regex: `^${normalized.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, $options: "i" }
+        // });
+
+        if (!deleted) {
+          ack?.({ ok: false, msg: "Product not found for code" });
+          return;
+        }
+
+        const updated = await Product.find().lean();
+        io.emit("products", updated);
+        ack?.({ ok: true });
+      } catch (e) {
+        console.error("WS delete-product error:", e);
+        ack?.({
+          ok: false,
+          msg: e?.message || "No se pudo eliminar el producto",
+        });
+      }
     });
   });
 }
