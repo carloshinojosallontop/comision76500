@@ -1,20 +1,32 @@
 import "dotenv/config";
 import "./config/db.config.js";
 import app from "./app.js";
+import http from "http";
+import { Server } from "socket.io";
+import registerSockets from "./sockets/index.js";
 
 const PORT = process.env.PORT || 8080;
 
-const server = app.listen(PORT, () => {
+const httpServer = http.createServer(app);
+
+const io = new Server(httpServer, {
+  // Ajusta CORS si tu front está en otro dominio/puerto
+  cors: { origin: "*", methods: ["GET", "POST"] },
+});
+
+app.set("io", io); // Hacer io accesible desde las rutas (para HTTP -> Puente WS)
+
+registerSockets(io); // Eventos WS (separados en otro módulo, más limpio
+
+httpServer.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
 
-server.on("error", (err) => {
-  console.error("Server error:", err);
-});
+httpServer.on("error", (err) => console.error("Server error:", err));
 
 process.on("SIGINT", () => {
   console.log("Recibido SIGINT, apagando servidor...");
-  server.close(() => {
+  httpServer.close(() => {
     console.log("Servidor apagado.");
     process.exit(0);
   });

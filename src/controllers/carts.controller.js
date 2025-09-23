@@ -3,37 +3,25 @@ import Product from "../models/product.model.js";
 import HttpError from "../utils/HttpError.js";
 import mongoose from "mongoose";
 
-/**
- * POST /api/carts
- * Crea un carrito vacío (o podrías extender para aceptar products iniciales)
- */
-export async function create(req, res, next) {
+const create = async (req, res, next) => {
   try {
     const cart = await Cart.create({ products: [] });
     res.status(201).json(cart);
   } catch (e) {
     next(e);
   }
-}
+};
 
-/**
- * GET /api/carts
- * Lista todos los carritos (útil en desarrollo)
- */
-export async function getAll(req, res, next) {
+const getAll = async (req, res, next) => {
   try {
     const carts = await Cart.find().populate("products.product");
     res.json(carts);
   } catch (e) {
     next(e);
   }
-}
-/**
- * POST /api/carts/:cid/product/:pid
- * Agrega un producto al carrito. Si ya existe, incrementa la cantidad.
- * Body opcional: { quantity: <Number> } => default 1
- */
-export async function addToCart(req, res, next) {
+};
+
+const addToCart = async (req, res, next) => {
   try {
     const { cid, pid } = req.params;
     const qty =
@@ -62,14 +50,9 @@ export async function addToCart(req, res, next) {
   } catch (e) {
     next(e);
   }
-}
+};
 
-/**
- * GET /api/carts/:cid
- * Obtiene un carrito por id con populate
- */
-
-export async function getById(req, res, next) {
+const getById = async (req, res, next) => {
   try {
     const { cid } = req.params;
     if (!mongoose.isValidObjectId(cid))
@@ -81,14 +64,9 @@ export async function getById(req, res, next) {
   } catch (e) {
     next(e);
   }
-}
+};
 
-/**
- * PUT /api/carts/:cid
- * Reemplaza TODO el arreglo products
- * Body: { products: [{ product, quantity }] }
- */
-export async function replaceProducts(req, res, next) {
+const replaceProducts = async (req, res, next) => {
   try {
     const { cid } = req.params;
     const { products } = req.body;
@@ -113,14 +91,9 @@ export async function replaceProducts(req, res, next) {
   } catch (e) {
     next(e);
   }
-}
+};
 
-/**
- * PUT /api/carts/:cid/products/:pid
- * Actualiza SOLO la cantidad de un producto del carrito
- * Body: { quantity: <Number> }
- */
-export async function updateQuantity(req, res, next) {
+const updateQuantity = async (req, res, next) => {
   try {
     const { cid, pid } = req.params;
     const { quantity } = req.body;
@@ -146,13 +119,9 @@ export async function updateQuantity(req, res, next) {
   } catch (e) {
     next(e);
   }
-}
+};
 
-/**
- * DELETE /api/carts/:cid/products/:pid
- * Elimina un producto del carrito
- */
-export async function removeProduct(req, res, next) {
+const removeProduct = async (req, res, next) => {
   try {
     const { cid, pid } = req.params;
 
@@ -173,13 +142,9 @@ export async function removeProduct(req, res, next) {
   } catch (e) {
     next(e);
   }
-}
+};
 
-/**
- * DELETE /api/carts/:cid
- * Vacía el carrito
- */
-export async function clearCart(req, res, next) {
+const clearCart = async (req, res, next) => {
   try {
     const { cid } = req.params;
     if (!mongoose.isValidObjectId(cid))
@@ -194,4 +159,15 @@ export async function clearCart(req, res, next) {
   } catch (e) {
     next(e);
   }
-}
+};
+
+export default {
+  create,
+  getAll,
+  addToCart,
+  getById,
+  replaceProducts,
+  updateQuantity,
+  removeProduct,
+  clearCart,
+};

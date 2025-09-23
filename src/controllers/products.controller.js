@@ -3,7 +3,7 @@ import Product from "../models/product.model.js";
 import { buildPageLinks } from "../utils/buildLinks.js";
 import HttpError from "../utils/HttpError.js";
 
-export async function getAll(req, res, next) {
+const getAll = async (req, res, next) => {
   try {
     const { limit = 10, page = 1, sort, query } = req.query;
 
@@ -51,7 +51,7 @@ export async function getAll(req, res, next) {
   }
 }
 
-export async function addProduct(req, res, next) {
+const addProduct = async (req, res, next) => {
   try {
     const doc = await Product.create(req.body);
     res.status(201).json(doc);
@@ -60,7 +60,7 @@ export async function addProduct(req, res, next) {
   }
 }
 
-export async function getById(req, res, next) {
+const getById = async (req, res, next) => {
   try {
     const { pid } = req.params;
     if (!mongoose.isValidObjectId(pid)) {
@@ -76,7 +76,7 @@ export async function getById(req, res, next) {
   }
 }
 
-export async function updateById(req, res, next) {
+const updateById = async (req, res, next) => {
   try {
     const { pid } = req.params;
     if (!mongoose.isValidObjectId(pid)) {
@@ -93,7 +93,7 @@ export async function updateById(req, res, next) {
   }
 }
 
-export async function deleteById(req, res, next) {
+const deleteById = async (req, res, next) => {
   try {
     const { pid } = req.params;
       if (!mongoose.isValidObjectId(pid)) {
@@ -106,3 +106,10 @@ export async function deleteById(req, res, next) {
     next(e);
   }
 }
+ export default {
+  getAll,
+  addProduct,
+  getById,
+  updateById,
+  deleteById,
+};
