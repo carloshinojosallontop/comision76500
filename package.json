@@ -1,19 +1,24 @@
 {
   "name": "servidor-express",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "src/server.js",
   "type": "module",
   "scripts": {
-    "start": "node ./src/app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node ./src/server.js",
+    "dev": "node --watch ./src/server.js",
+    "start:db": "docker run --name db_ecommerce -p 27017:27017 -d mongo",
+    "stop:db": "docker stop db_ecommerce && docker rm db_ecommerce"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "dotenv": "^17.2.2",
     "express": "^5.1.0",
     "express-handlebars": "^8.0.2",
+    "mongoose": "^8.18.2",
+    "mongoose-paginate-v2": "^1.9.1",
     "socket.io": "^4.8.1"
   }
 }

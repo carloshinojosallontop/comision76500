@@ -1,0 +1,173 @@
+import Cart from "../models/cart.model.js";
+import Product from "../models/product.model.js";
+import HttpError from "../utils/HttpError.js";
+import mongoose from "mongoose";
+
+const create = async (req, res, next) => {
+  try {
+    const cart = await Cart.create({ products: [] });
+    res.status(201).json(cart);
+  } catch (e) {
+    next(e);
+  }
+};
+
+const getAll = async (req, res, next) => {
+  try {
+    const carts = await Cart.find().populate("products.product");
+    res.json(carts);
+  } catch (e) {
+    next(e);
+  }
+};
+
+const addToCart = async (req, res, next) => {
+  try {
+    const { cid, pid } = req.params;
+    const qty =
+      Number.isInteger(req.body?.quantity) && req.body.quantity > 0
+        ? req.body.quantity
+        : 1;
+
+    if (!mongoose.isValidObjectId(cid))
+      throw new HttpError(400, "Invalid cart id");
+    if (!mongoose.isValidObjectId(pid))
+      throw new HttpError(400, "Invalid product id");
+
+    const cart = await Cart.findById(cid);
+    if (!cart) throw new HttpError(404, "Cart not found");
+
+    const prodExists = await Product.exists({ _id: pid });
+    if (!prodExists) throw new HttpError(404, "Product not found");
+
+    const item = cart.products.find((p) => String(p.product) === String(pid));
+    if (item) item.quantity += qty;
+    else cart.products.push({ product: pid, quantity: qty });
+
+    await cart.save();
+    await cart.populate("products.product");
+    res.json(cart);
+  } catch (e) {
+    next(e);
+  }
+};
+
+const getById = async (req, res, next) => {
+  try {
+    const { cid } = req.params;
+    if (!mongoose.isValidObjectId(cid))
+      throw new HttpError(400, "Invalid cart id");
+
+    const cart = await Cart.findById(cid).populate("products.product");
+    if (!cart) throw new HttpError(404, "Cart not found");
+    res.json(cart);
+  } catch (e) {
+    next(e);
+  }
+};
+
+const replaceProducts = async (req, res, next) => {
+  try {
+    const { cid } = req.params;
+    const { products } = req.body;
+
+    if (!mongoose.isValidObjectId(cid))
+      throw new HttpError(400, "Invalid cart id");
+    if (!Array.isArray(products)) {
+      throw new HttpError(
+        400,
+        "products must be an array of {product, quantity}"
+      );
+    }
+
+    const cart = await Cart.findByIdAndUpdate(
+      cid,
+      { products },
+      { new: true, runValidators: true }
+    ).populate("products.product");
+
+    if (!cart) throw new HttpError(404, "Cart not found");
+    res.json(cart);
+  } catch (e) {
+    next(e);
+  }
+};
+
+const updateQuantity = async (req, res, next) => {
+  try {
+    const { cid, pid } = req.params;
+    const { quantity } = req.body;
+
+    if (!mongoose.isValidObjectId(cid))
+      throw new HttpError(400, "Invalid cart id");
+    if (!mongoose.isValidObjectId(pid))
+      throw new HttpError(400, "Invalid product id");
+    if (!Number.isInteger(quantity) || quantity < 1) {
+      throw new HttpError(400, "Invalid quantity");
+    }
+
+    const cart = await Cart.findById(cid);
+    if (!cart) throw new HttpError(404, "Cart not found");
+
+    const item = cart.products.find((p) => String(p.product) === String(pid));
+    if (!item) throw new HttpError(404, "Product not in cart");
+
+    item.quantity = quantity;
+    await cart.save();
+    await cart.populate("products.product");
+    res.json(cart);
+  } catch (e) {
+    next(e);
+  }
+};
+
+const removeProduct = async (req, res, next) => {
+  try {
+    const { cid, pid } = req.params;
+
+    if (!mongoose.isValidObjectId(cid))
+      throw new HttpError(400, "Invalid cart id");
+    if (!mongoose.isValidObjectId(pid))
+      throw new HttpError(400, "Invalid product id");
+
+    const cart = await Cart.findById(cid);
+    if (!cart) throw new HttpError(404, "Cart not found");
+
+    cart.products = cart.products.filter(
+      (p) => String(p.product) !== String(pid)
+    );
+    await cart.save();
+    await cart.populate("products.product");
+    res.json(cart);
+  } catch (e) {
+    next(e);
+  }
+};
+
+const clearCart = async (req, res, next) => {
+  try {
+    const { cid } = req.params;
+    if (!mongoose.isValidObjectId(cid))
+      throw new HttpError(400, "Invalid cart id");
+
+    const cart = await Cart.findById(cid);
+    if (!cart) throw new HttpError(404, "Cart not found");
+
+    cart.products = [];
+    await cart.save();
+    res.json(cart);
+  } catch (e) {
+    next(e);
+  }
+};
+
+export default {
+  create,
+  getAll,
+  addToCart,
+  getById,
+  replaceProducts,
+  updateQuantity,
+  removeProduct,
+  clearCart,
+};

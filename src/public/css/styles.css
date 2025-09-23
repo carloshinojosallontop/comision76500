@@ -1,0 +1,352 @@
+:root {
+  /* Palette */
+  --bg: #f7f7f8;
+  --card: #ffffff;
+  --fg: #0a7; /* accent */
+  --fg-contrast: #ffffff;
+  --text: #1a1a1a;
+  --text-2: #5e5e63;
+  --border: #e8e8ec;
+
+  /* Effects */
+  --radius: 14px;
+  --shadow: 0 6px 22px rgba(0, 0, 0, 0.06);
+  --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.05);
+
+  /* Typography */
+  --font: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  --fs-1: clamp(1.45rem, 1.1rem + 1vw, 2rem);
+  --fs-2: clamp(1.1rem, 1rem + 0.5vw, 1.35rem);
+
+  /* Spacing */
+  --container-w: 980px;
+  --gap: 1rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0f1115;
+    --card: #151823;
+    --text: #eef0f3;
+    --text-2: #a1a7b3;
+    --border: #272b36;
+    --shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.25);
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  padding: 2rem;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.container {
+  max-width: var(--container-w);
+  margin: 0 auto;
+  background: var(--card);
+  padding: 1.25rem 1.5rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+h1 {
+  margin: 0.2rem 0 0.8rem;
+  font-size: var(--fs-1);
+  letter-spacing: -0.02em;
+}
+h2 {
+  margin: 0.2rem 0 0.8rem;
+  font-size: var(--fs-2);
+  letter-spacing: -0.01em;
+}
+.muted {
+  color: var(--text-2);
+}
+.right {
+  text-align: right;
+}
+
+/* ---------- Nav ---------- */
+nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+}
+nav a {
+  text-decoration: none;
+  color: var(--text);
+  padding: 0.45rem 0.7rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: transparent;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease,
+    transform 0.08s ease;
+}
+nav a:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+nav a.active {
+  background: var(--fg);
+  color: var(--fg-contrast);
+  border-color: var(--fg);
+  box-shadow: 0 4px 14px rgba(10, 119, 119, 0.25);
+}
+@media (prefers-color-scheme: dark) {
+  nav a:hover {
+    background: rgba(255, 255, 255, 0.04);
+  }
+}
+
+/* ---------- Buttons ---------- */
+.btn,
+button,
+input[type="submit"] {
+  appearance: none;
+  border: 1px solid var(--border);
+  background: var(--fg);
+  color: var(--fg-contrast);
+  padding: 0.6rem 1rem;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.06s ease, box-shadow 0.2s ease, background 0.2s ease,
+    border-color 0.2s ease;
+  box-shadow: var(--shadow-sm);
+}
+.btn:hover {
+  filter: brightness(1.02);
+}
+.btn:active {
+  transform: translateY(1px);
+}
+.btn[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--text);
+  border-color: var(--border);
+}
+.btn-outline:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.danger {
+  background: #d33;
+  border-color: #d33;
+}
+.danger:hover {
+  filter: brightness(1.03);
+}
+
+/* ---------- Forms ---------- */
+form {
+  display: grid;
+  gap: 0.7rem;
+  grid-template-columns: repeat(3, 1fr);
+  align-items: start;
+}
+@media (max-width: 820px) {
+  form {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (max-width: 520px) {
+  form {
+    grid-template-columns: 1fr;
+  }
+}
+
+input,
+select {
+  width: 100%;
+  padding: 0.55rem 0.65rem;
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+input::placeholder {
+  color: var(--text-2);
+  opacity: 0.75;
+}
+
+input:focus-visible,
+select:focus-visible,
+.btn:focus-visible,
+a:focus-visible {
+  outline: 2px solid transparent;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--fg) 30%, transparent);
+}
+
+/* ---------- Layout helpers ---------- */
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  margin-top: 1rem;
+}
+@media (max-width: 820px) {
+  .row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.pill {
+  display: inline-block;
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--fg) 8%, var(--card));
+  border: 1px solid var(--border);
+  color: var(--text-2);
+  font-size: 0.8rem;
+}
+
+/* ---------- Tables ---------- */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+thead th {
+  background: color-mix(in srgb, var(--fg) 6%, var(--card));
+  color: var(--text);
+  font-weight: 700;
+  text-align: left;
+  padding: 0.7rem 0.6rem;
+  border-bottom: 1px solid var(--border);
+}
+tbody td {
+  padding: 0.65rem 0.6rem;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+tbody tr:hover {
+  background: color-mix(in srgb, var(--fg) 4%, var(--card));
+}
+tfoot th {
+  padding: 0.75rem 0.6rem;
+  border-top: 1px solid var(--border);
+  background: color-mix(in srgb, var(--fg) 8%, var(--card));
+}
+
+.qty-input {
+  width: 90px;
+  padding: 0.45rem 0.5rem;
+  text-align: right;
+}
+
+/* ---------- Footer ---------- */
+footer {
+  margin-top: 2rem;
+  color: var(--text-2);
+  font-size: 0.92rem;
+}
+
+/* ---------- Toast (compat con tu addToCart) ---------- */
+#toast,
+.toast,
+[data-toast] {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 9999;
+  background: var(--text);
+  color: var(--card);
+  padding: 10px 14px;
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  font-size: 0.9rem;
+  display: none;
+}
+
+/* ---------- Scrollbar (nice) ---------- */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--fg) 45%, var(--border)) transparent;
+}
+*::-webkit-scrollbar {
+  height: 10px;
+  width: 10px;
+}
+*::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--fg) 45%, var(--border));
+  border-radius: 999px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+  }
+}
+
+/* Ayuda a que los controles nativos respeten el tema */
+:root { color-scheme: light dark; }
+
+/* Estilo base del select (cerrado) */
+select {
+  background: var(--card);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: .55rem .9rem;
+}
+
+/* Enfoque/hover: realza sin “blanquear” */
+select:hover,
+select:focus-visible {
+  background: color-mix(in srgb, var(--fg) 6%, var(--card));
+  outline: 2px solid transparent;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--fg) 30%, transparent);
+}
+
+/* Opciones del menú (Chrome/Edge/Firefox desktop lo respetan) */
+select option {
+  background: var(--card);
+  color: var(--text);
+}
+
+/* Fuerza colores en dark mode (por si el UA pone blanco) */
+@media (prefers-color-scheme: dark) {
+  select { background: var(--card); color: var(--text); }
+  select option { background: var(--card); color: var(--text); }
+}
+
+/* Safari/iOS a veces ignora option; como mínimo el propio select queda legible */
