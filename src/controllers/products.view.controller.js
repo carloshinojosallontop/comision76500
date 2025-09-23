@@ -1,11 +1,25 @@
 import Product from "../models/product.model.js";
-import HttpError from "../utils/HttpError.js";
 
 /** GET /  -> Home */
 export async function renderHome(req, res, next) {
   try {
+    // Últimos 12 productos para render inicial (SSR)
     const products = await Product.find().sort({ _id: -1 }).limit(12).lean();
-    res.render("home", { title: "Home", isHome: true, products });
+
+    // Distintas categorías (limpiando nulos/vacíos)
+    const categoriesRaw = await Product.distinct("category");
+    const categories = categoriesRaw
+      .filter(Boolean)
+      .map(String)
+      .filter((s) => s.trim() !== "")
+      .sort((a, b) => a.localeCompare(b));
+
+    res.render("products/home", {
+      title: "Home",
+      isHome: true,
+      products,
+      categories,
+    });
   } catch (e) {
     next(e);
   }
@@ -15,7 +29,7 @@ export async function renderHome(req, res, next) {
 export async function renderRealtime(req, res, next) {
   try {
     const products = await Product.find().lean(); // render inicial
-    res.render("realTimeProducts", {
+    res.render("products/realTimeProducts", {
       title: "Productos en tiempo real",
       isRealtime: true,
       products,

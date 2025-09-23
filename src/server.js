@@ -10,7 +10,6 @@ const PORT = process.env.PORT || 8080;
 const httpServer = http.createServer(app);
 
 const io = new Server(httpServer, {
-  // Ajusta CORS si tu front está en otro dominio/puerto
   cors: { origin: "*", methods: ["GET", "POST"] },
 });
 

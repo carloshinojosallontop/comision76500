@@ -7,7 +7,13 @@
   </thead>
   <tbody id="products-body">
     {{#each products}}
-      {{> productRow}}
+      <tr>
+        <td class="muted">{{code}}</td>
+        <td>{{title}}</td>
+        <td>{{price}}</td>
+        <td>{{stock}}</td>
+        <td>{{category}}</td>
+      </tr>
     {{/each}}
   </tbody>
 </table>
@@ -36,6 +42,5 @@
   </section>
 </div>
 
-<!-- Scripts específicos de esta vista (directos, sin bloques) -->
 <script src="/socket.io/socket.io.js"></script>
 <script src="/public/js/realtime.js" defer></script>

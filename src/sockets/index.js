@@ -47,13 +47,7 @@ export default function registerSockets(io) {
         }
         const normalized = String(code).trim();
 
-        // Borrado por code exacto (case-sensitive). Si quieres que sea case-insensitive, usa la versión comentada abajo.
         const deleted = await Product.findOneAndDelete({ code: normalized });
-
-        // // ❕ Versión case-insensitive:
-        // const deleted = await Product.findOneAndDelete({
-        //   code: { $regex: `^${normalized.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, $options: "i" }
-        // });
 
         if (!deleted) {
           ack?.({ ok: false, msg: "Product not found for code" });

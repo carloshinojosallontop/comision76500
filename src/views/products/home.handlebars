@@ -1,0 +1,66 @@
+<h2 class="muted">Lista de productos</h2>
+
+<div class="filters" style="display:flex;gap:.75rem;align-items:center;margin:.5rem 0 1rem;">
+  <label>Categoria:
+    <select id="filter-category">
+      <option value="">Todas</option>
+      {{#each categories}}
+        <option value="{{this}}">{{this}}</option>
+      {{/each}}
+    </select>
+  </label>
+
+  <label>Ordenar por precio:
+    <select id="sort-price">
+      <option value="">Sin orden</option>
+      <option value="asc">Ascendente</option>
+      <option value="desc">Descendente</option>
+    </select>
+  </label>
+
+  <label>Límite:
+    <input id="limit" type="number" min="1" step="1" value="10" style="width:80px" />
+  </label>
+
+  <button id="apply-filters" class="btn">Aplicar</button>
+</div>
+
+{{#if products.length}}
+<table aria-label="Listado de productos">
+  <thead>
+    <tr>
+      <th>Código</th><th>Título</th><th>Precio</th><th>Stock</th><th>Categoría</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody id="products-body">
+    {{#each products}}
+      <tr>
+        <td class="muted">{{code}}</td>
+        <td>{{title}}</td>
+        <td>{{price}}</td>
+        <td>{{stock}}</td>
+        <td>{{category}}</td>
+        <td>
+          <button class="btn add-to-cart" data-pid="{{_id}}">Agregar</button>
+        </td>
+      </tr>
+    {{/each}}
+  </tbody>
+</table>
+
+<!-- Paginador -->
+<div class="pager" style="display:flex;gap:.5rem;align-items:center;justify-content:flex-end;margin-top:10px;">
+  <button id="prevPage" class="btn" disabled>&laquo; Anterior</button>
+  <span id="pageInfo" class="muted">Página 1 de 1</span>
+  <button id="nextPage" class="btn" disabled>Siguiente &raquo;</button>
+</div>
+
+{{else}}
+  <p class="muted">No hay productos cargados todavía.</p>
+{{/if}}
+
+{{!-- Scripts específicos de esta vista --}}
+{{#*inline "scripts"}}
+  <script src="/public/js/homeFilters.js" defer></script>
+{{/inline}}
